@@ -65,9 +65,26 @@ yargs.command([{
 },
 {
     command: 'list',
-    describe: 'list contacts',
+    describe: 'see list contacts',
     handler(argv) {
         contacts.listContact();
+    }
+},
+{
+    command: 'delete',
+    describe: 'delete contact',
+    builder: {
+        name: {
+            describe: 'Contact Name',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler(argv) {
+        // Membuat object contact
+        const contactName = argv.name;
+
+        contacts.deleteContact(contactName);
     }
 }]);
 

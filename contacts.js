@@ -81,8 +81,38 @@ const listContact = () => {
         });
         return;
     }
-    
+
     console.log('Kontak kosong');
 };
 
-module.exports = { saveContact, findContact, listContact }
+const deleteContact = (name) => {
+
+    // Membuat variable untuk path file contacts.json
+    const dataPath = 'data/contacts.json';
+
+    // Parsing file contacts.json menjadi sebuah array
+    const contacts = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+
+    // Mencari detail kontak
+    const contact = contacts.find(contact => contact.name.toUpperCase() === name.toUpperCase());
+    if (!contact) {
+        console.log('Kontak tidak ditemukan');
+    } else {
+
+        let result = [];
+        for (let i = 0; i < contacts.length; i++) {
+            const contact = contacts[i];
+            if (contact.name.toUpperCase() === name.toUpperCase()) {
+                continue;
+            }
+            result.push(contact);
+        }
+
+        const jsonString = JSON.stringify(result);
+        fs.writeFileSync(dataPath, jsonString);
+
+        console.log('Kontak berhasil dihapus!');
+    }
+};
+
+module.exports = { saveContact, findContact, listContact, deleteContact }
