@@ -37,8 +37,7 @@ const saveContact = (name, email, mobile) => {
     contacts.push(contact);
 
     // Mengoverwrite file contacts.json
-    const jsonString = JSON.stringify(contacts);
-    fs.writeFileSync(dataPath, jsonString);
+    writeFileContacts(contacts);
 
     console.log(contact);
     console.log('Kontak berhasil ditambahkan!');
@@ -47,11 +46,8 @@ const saveContact = (name, email, mobile) => {
 // Function untuk mencari kontak
 const findContact = (name) => {
 
-    // Membuat variable untuk path file contacts.json
-    const dataPath = 'data/contacts.json';
-
     // Parsing file contacts.json menjadi sebuah array
-    const contacts = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+    const contacts = readFileContacts();
 
     // Mencari detail kontak
     const contact = contacts.find(contact => contact.name.toUpperCase() === name.toUpperCase());
@@ -65,11 +61,8 @@ const findContact = (name) => {
 // Function untuk menampilkan seluruh kontak
 const listContact = () => {
 
-    // Membuat variable untuk path file contacts.json
-    const dataPath = 'data/contacts.json';
-
     // Parsing file contacts.json menjadi sebuah array
-    const contacts = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+    const contacts = readFileContacts();
 
     // Menampilkan seluruh kontak
     let count = 0;
@@ -87,11 +80,8 @@ const listContact = () => {
 
 const deleteContact = (name) => {
 
-    // Membuat variable untuk path file contacts.json
-    const dataPath = 'data/contacts.json';
-
     // Parsing file contacts.json menjadi sebuah array
-    const contacts = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+    const contacts = readFileContacts();
 
     // Mencari detail kontak
     const contact = contacts.find(contact => contact.name.toUpperCase() === name.toUpperCase());
@@ -108,11 +98,56 @@ const deleteContact = (name) => {
             result.push(contact);
         }
 
-        const jsonString = JSON.stringify(result);
-        fs.writeFileSync(dataPath, jsonString);
+        // Mengoverwrite file contacts.json
+        writeFileContacts(result);
 
         console.log('Kontak berhasil dihapus!');
     }
 };
 
-module.exports = { saveContact, findContact, listContact, deleteContact }
+const updateContact = (oldName, newName, email, mobile) => {
+
+    // Parsing file contacts.json menjadi sebuah array
+    const contacts = readFileContacts();
+
+    const index = contacts.findIndex(contact => contact.name.toUpperCase() === oldName.toUpperCase());
+    if (index === -1) {
+        console.log('Kontak tidak ditemukan');
+        return;
+    }
+
+    const checkDuplicate = contacts.find(contact => contact.name.toUpperCase() === newName.toUpperCase());
+    if (checkDuplicate) {
+        console.log('Nama sudah digunakan');
+        return;
+    }
+    contacts[index].name = newName;
+    contacts[index].email = email;
+    contacts[index].mobile = mobile;
+
+    // Mengoverwrite file contacts.json
+    writeFileContacts(contacts);
+
+    console.log('Kontak berhasil diupdate!');
+};
+
+const readFileContacts = () => {
+    // Membuat variable untuk path file contacts.json
+    const dataPath = 'data/contacts.json';
+
+    // Parsing file contacts.json menjadi sebuah array
+    const contacts = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+
+    return contacts;
+};
+
+const writeFileContacts = (contacts) => {
+    // Membuat variable untuk path file contacts.json
+    const dataPath = 'data/contacts.json';
+
+    // Mengoverwrite file contacts.json
+    const jsonString = JSON.stringify(contacts);
+    fs.writeFileSync(dataPath, jsonString);
+};
+
+module.exports = { saveContact, findContact, listContact, deleteContact, updateContact }
