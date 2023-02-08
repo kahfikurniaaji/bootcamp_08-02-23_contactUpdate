@@ -62,6 +62,13 @@ yargs.command([{
 
         contacts.findContact(contactName);
     }
+},
+{
+    command: 'list',
+    describe: 'list contacts',
+    handler(argv) {
+        contacts.listContact();
+    }
 }]);
 
 yargs.parse();

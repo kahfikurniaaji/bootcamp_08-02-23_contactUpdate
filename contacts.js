@@ -44,6 +44,7 @@ const saveContact = (name, email, mobile) => {
     console.log('Kontak berhasil ditambahkan!');
 };
 
+// Function untuk mencari kontak
 const findContact = (name) => {
 
     // Membuat variable untuk path file contacts.json
@@ -61,4 +62,27 @@ const findContact = (name) => {
     }
 };
 
-module.exports = { saveContact, findContact }
+// Function untuk menampilkan seluruh kontak
+const listContact = () => {
+
+    // Membuat variable untuk path file contacts.json
+    const dataPath = 'data/contacts.json';
+
+    // Parsing file contacts.json menjadi sebuah array
+    const contacts = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+
+    // Menampilkan seluruh kontak
+    let count = 0;
+
+    if (contacts.length > 0) {
+        contacts.forEach(contact => {
+            count++;
+            console.log(`${count}. ${contact.name} - ${contact.mobile}`);
+        });
+        return;
+    }
+    
+    console.log('Kontak kosong');
+};
+
+module.exports = { saveContact, findContact, listContact }
